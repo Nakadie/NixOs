@@ -55,7 +55,7 @@
   users.users.hpserver = {
     isNormalUser = true;
     description = "hpserver";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "docker-compose" ];
     packages = with pkgs; [
 
     ];
