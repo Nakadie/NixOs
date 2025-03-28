@@ -55,12 +55,14 @@
   users.users.hpserver = {
     isNormalUser = true;
     description = "hpserver";
-    extraGroups = [ "networkmanager" "wheel" "docker" "docker-compose" ];
+    extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-     docker
-     docker-compose
+
     ];
   };
+
+  # Enable docker
+  virtualisation.docker.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -71,6 +73,7 @@
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
   #  wget
    git
+   pkgs.docker-compose
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
