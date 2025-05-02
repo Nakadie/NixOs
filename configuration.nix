@@ -14,10 +14,27 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  boot = {
+   supportedFilesystems = {
+     zfs = true;
+    };
+
+    kernelModules = [ 
+      "zfs" # ZFS support
+    ];
+
+    kernelParams = [
+      # 8GB
+      # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-arc-max
+      "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 8)}"
+    ];
+ };
+
   # Enable Flakes.
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   networking.hostName = "nixos"; # Define your hostname.
+  networking.hostId = "984538cb";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -76,7 +93,15 @@
    docker-compose
    fzf
    tealdeer
+   gedit
   ];
+
+ services.zfs = {
+  autoScrub = {
+   enable = true;
+   interval = "Thu *-*-* 04:00:00"; # Every Thursday at 4am.
+};
+};
 
  
   # Some programs need SUID wrappers, can be configured further or are
