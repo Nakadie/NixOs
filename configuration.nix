@@ -72,7 +72,7 @@
   users.users.hpserver = {
     isNormalUser = true;
     description = "hpserver";
-    extraGroups = [ "networkmanager" "wheel" "docker" "docker-compose" "git" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "docker-compose" "git" "vscode-server" ];
     packages = with pkgs; [
 
     ];
