@@ -94,6 +94,9 @@
    fzf
    tealdeer
    gedit
+   nodejs
+   bash
+   coreutils
   ];
 
  services.zfs = {
