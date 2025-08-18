@@ -5,21 +5,18 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+  imports = [ # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot = {
-   supportedFilesystems = {
-     zfs = true;
-    };
+    supportedFilesystems = { zfs = true; };
 
-    kernelModules = [ 
+    kernelModules = [
       "zfs" # ZFS support
     ];
 
@@ -28,7 +25,7 @@
       # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-arc-max
       "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 8)}"
     ];
- };
+  };
 
   # Enable Flakes.
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -72,10 +69,18 @@
   users.users.hpserver = {
     isNormalUser = true;
     description = "hpserver";
-    extraGroups = [ "networkmanager" "wheel" "docker" "docker-compose" "git" "vscode-server" ];
-    packages = with pkgs; [
-
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "docker-compose"
+      "git"
+      "vscode-server"
     ];
+    packages = with pkgs;
+      [
+
+      ];
   };
 
   # Enable docker
@@ -89,28 +94,27 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-  #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-   wget
-   git
-   docker-compose
-   fzf
-   tealdeer
-   gedit
-   nodejs
-   bash
-   coreutils
-   openssl
+    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    git
+    docker-compose
+    fzf
+    tealdeer
+    gedit
+    nodejs
+    bash
+    coreutils
+    openssl
+    nixfmt
   ];
 
- services.zfs = {
-  autoScrub = {
-   enable = true;
-   interval = "Thu *-*-* 04:00:00"; # Every Thursday at 4am.
-};
-  autoimport.enable = true; # Automatically import ZFS pools at boot.
-};
+  services.zfs = {
+    autoScrub = {
+      enable = true;
+      interval = "Thu *-*-* 04:00:00"; # Every Thursday at 4am.
+    };
+  };
 
- 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -123,7 +127,6 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
