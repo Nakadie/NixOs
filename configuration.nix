@@ -81,6 +81,8 @@
   # Enable docker
   virtualisation.docker.enable = true;
 
+  services.vscode-server.enable = true;
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -97,6 +99,7 @@
    nodejs
    bash
    coreutils
+   openssl
   ];
 
  services.zfs = {

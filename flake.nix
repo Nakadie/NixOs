@@ -2,20 +2,23 @@
   description = "A simple NixOS flake";
 
   inputs = {
-    # NixOS official package source, using the nixos-24.11 branch here
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-    vscode-server.url = "github:msteen/nixos-vscode-server";
+    vscode-server.url = "github:nix-community/nixos-vscode-server";
+    vscode-server.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { self, nixpkgs, ... }@inputs: {
+  outputs = { self, nixpkgs, vscode-server, ... }@inputs: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
-        # Import the previous configuration.nix we used,
-        # so the old configuration file still takes effect
         vscode-server.nixosModules.default
         ./configuration.nix
+        # Enable the service here as an inline module:
+        ({ config, pkgs, ... }: {
+          services.vscode-server.enable = true;
+        })
       ];
     };
   };
 }
+
