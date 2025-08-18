@@ -107,6 +107,7 @@
    enable = true;
    interval = "Thu *-*-* 04:00:00"; # Every Thursday at 4am.
 };
+  autoimport.enable = true; # Automatically import ZFS pools at boot.
 };
 
  
