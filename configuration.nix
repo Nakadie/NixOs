@@ -20,6 +20,8 @@
       "zfs" # ZFS support
     ];
 
+    zfs.extraPools = [ "storagePool8Tb" ];
+
     kernelParams = [
       # 8GB
       # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-arc-max
