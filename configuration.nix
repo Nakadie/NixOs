@@ -108,6 +108,7 @@
     coreutils
     openssl
     nixfmt
+    restic
   ];
 
   services.zfs = {
