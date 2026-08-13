@@ -7,6 +7,7 @@
 {
   imports = [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./caddy.nix    ./agh.nix
   ];
 
   # Bootloader.
@@ -103,13 +104,44 @@
     fzf
     tealdeer
     gedit
-    nodejs
+    nodejs_22
+    nodePackages.npm
     bash
     coreutils
     openssl
     nixfmt
     restic
+    tailscale
+    wgnord
+    direnv
+    fastfetch
+    bashmount
+    immich-cli
+    nh
   ];
+
+  services.tailscale.enable = true;
+
+  # services.restic.backups."paperless-documents" = {
+  #   repository = "/storagePool8Tb/backups/restic"; # Local backup location (adjust if needed)
+  #   passwordFile = "/etc/nixos/restic-password";   # Create this file with your restic repo password
+  #   paths = [
+  #     "/storagePool8Tb/documents"
+  #   ];
+  #   timerConfig = {
+  #     OnCalendar = "daily";
+  #     Persistent = true;
+  #   };
+  #   pruneOpts = [
+  #     "--keep-daily 7"
+  #     "--keep-weekly 4"
+  #     "--keep-monthly 6"
+  #   ];
+  #   extraBackupArgs = [
+  #     "--exclude=.cache"
+  #     "--exclude=Downloads"
+  #   ];
+  # };
 
   services.zfs = {
     autoScrub = {
@@ -137,7 +169,11 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  networking.firewall.allowedTCPPorts = [ 2283 ];
+  networking.firewall.allowedTCPPorts = [
+    2283 # Immich
+    8096 # Jellyfin
+    8080 # Romm
+  ];
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -146,6 +182,5 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
-
 }
 
