@@ -1,16 +1,25 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
+# NixOS Configuration
+# For help, see: configuration.nix(5) man page and nixos-help
 
 { config, pkgs, ... }:
 
 {
-  imports = [ # Include the results of the hardware scan.
+  # ============================================================================
+  # BASIC SYSTEM SETTINGS
+  # ============================================================================
+
+  imports = [
     ./hardware-configuration.nix
-    ./caddy.nix    ./agh.nix
+    ./caddy.nix
+    ./agh.nix
   ];
 
-  # Bootloader.
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # ============================================================================
+  # BOOT & FILESYSTEMS
+  # ============================================================================
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -24,51 +33,64 @@
     zfs.extraPools = [ "storagePool8Tb" ];
 
     kernelParams = [
-      # 8GB
+      # ZFS ARC Cache: 8GB limit
       # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-arc-max
       "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 8)}"
     ];
   };
 
-  # Enable Flakes.
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  # ============================================================================
+  # NETWORKING
+  # ============================================================================
 
-  networking.hostName = "nixos"; # Define your hostname.
-  networking.hostId = "984538cb";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking = {
+    hostName = "nixos";
+    hostId = "984538cb";
+    networkmanager.enable = true;
 
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "Asia/Tokyo";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "ja_JP.UTF-8";
-    LC_IDENTIFICATION = "ja_JP.UTF-8";
-    LC_MEASUREMENT = "ja_JP.UTF-8";
-    LC_MONETARY = "ja_JP.UTF-8";
-    LC_NAME = "ja_JP.UTF-8";
-    LC_NUMERIC = "ja_JP.UTF-8";
-    LC_PAPER = "ja_JP.UTF-8";
-    LC_TELEPHONE = "ja_JP.UTF-8";
-    LC_TIME = "ja_JP.UTF-8";
+    # Firewall configuration
+    firewall.allowedTCPPorts = [
+      2283  # Immich
+      8096  # Jellyfin
+      8080  # Romm
+    ];
   };
 
-  # Configure keymap in X11
+  # ============================================================================
+  # LOCALIZATION & TIME
+  # ============================================================================
+
+  time.timeZone = "Asia/Tokyo";
+
+  i18n = {
+    defaultLocale = "en_US.UTF-8";
+
+    extraLocaleSettings = {
+      LC_ADDRESS = "ja_JP.UTF-8";
+      LC_IDENTIFICATION = "ja_JP.UTF-8";
+      LC_MEASUREMENT = "ja_JP.UTF-8";
+      LC_MONETARY = "ja_JP.UTF-8";
+      LC_NAME = "ja_JP.UTF-8";
+      LC_NUMERIC = "ja_JP.UTF-8";
+      LC_PAPER = "ja_JP.UTF-8";
+      LC_TELEPHONE = "ja_JP.UTF-8";
+      LC_TIME = "ja_JP.UTF-8";
+    };
+  };
+
+  # ============================================================================
+  # KEYBOARD & DISPLAY
+  # ============================================================================
+
   services.xserver.xkb = {
     layout = "us";
     variant = "";
   };
 
-  # Define a user account. Don't forget to set a password with ‘passwd’.
+  # ============================================================================
+  # USERS & GROUPS
+  # ============================================================================
+
   users.users.hpserver = {
     isNormalUser = true;
     description = "hpserver";
@@ -80,54 +102,51 @@
       "git"
       "vscode-server"
     ];
-    packages = with pkgs;
-      [
-
-      ];
+    packages = with pkgs; [ ];
   };
 
-  # Enable docker
-  virtualisation.docker.enable = true;
+  # ============================================================================
+  # PACKAGE MANAGEMENT
+  # ============================================================================
 
-  services.vscode-server.enable = true;
-
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    # System utilities
     wget
     git
-    docker-compose
-    fzf
-    tealdeer
-    gedit
-    nodejs_22
-    nodePackages.npm
     bash
     coreutils
     openssl
+
+    # Development tools
+    nodejs_22
+    nodePackages.npm
     nixfmt
-    restic
-    tailscale
-    wgnord
+
+    # CLI utilities & tools
+    docker-compose
+    fzf
+    tealdeer
     direnv
     fastfetch
     bashmount
-    immich-cli
     nh
+
+    # Backup & monitoring
+    restic
+    tailscale
+    wgnord
+
+    # Media & applications
+    gedit
+    immich-cli
   ];
 
-  services.tailscale.enable = true;
-
   # services.restic.backups."paperless-documents" = {
-  #   repository = "/storagePool8Tb/backups/restic"; # Local backup location (adjust if needed)
-  #   passwordFile = "/etc/nixos/restic-password";   # Create this file with your restic repo password
-  #   paths = [
-  #     "/storagePool8Tb/documents"
-  #   ];
+  #   repository = "/storagePool8Tb/backups/restic";
+  #   passwordFile = "/etc/nixos/restic-password";
+  #   paths = [ "/storagePool8Tb/documents" ];
   #   timerConfig = {
   #     OnCalendar = "daily";
   #     Persistent = true;
@@ -143,44 +162,32 @@
   #   ];
   # };
 
-  services.zfs = {
-    autoScrub = {
+  # ============================================================================
+  # VIRTUALIZATION & SERVICES
+  # ============================================================================
+
+  virtualisation.docker.enable = true;
+
+  services = {
+    # SSH
+    openssh.enable = true;
+
+    # VS Code Server
+    vscode-server.enable = true;
+
+    # VPN
+    tailscale.enable = true;
+
+    # Storage
+    zfs.autoScrub = {
       enable = true;
-      interval = "Thu *-*-* 04:00:00"; # Every Thursday at 4am.
+      interval = "Thu *-*-* 04:00:00"; # Every Thursday at 4am
     };
   };
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
+  # ============================================================================
+  # SYSTEM STATE
+  # ============================================================================
 
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
-
-  # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
-
-  networking.firewall.allowedTCPPorts = [
-    2283 # Immich
-    8096 # Jellyfin
-    8080 # Romm
-  ];
-
-  # This value determines the NixOS release from which the default
-  # settings for stateful data, like file locations and database versions
-  # on your system were taken. It‘s perfectly fine and recommended to leave
-  # this value at the release version of the first install of this system.
-  # Before changing this value read the documentation for this option
-  # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "24.11";
 }
-
