@@ -11,6 +11,7 @@
   outputs = { self, nixpkgs, vscode-server, ... }@inputs: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
       modules = [
         vscode-server.nixosModules.default
         ./configuration.nix
