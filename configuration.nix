@@ -12,6 +12,7 @@
     ./hardware-configuration.nix
     ./caddy.nix
     ./agh.nix
+    ./samba.nix
   ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -137,11 +138,20 @@
     restic
     tailscale
     wgnord
+    rsync
 
     # Media & applications
     gedit
     immich-cli
   ];
+
+  # ============================================================================
+  # SHELL ALIASES
+  # ============================================================================
+
+  environment.shellAliases = {
+    rebuild = "nh os switch";
+  };
 
   # services.restic.backups."paperless-documents" = {
   #   repository = "/storagePool8Tb/backups/restic";
