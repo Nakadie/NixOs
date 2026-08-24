@@ -1,4 +1,5 @@
-{ config, pkgs, ... }: {
+{ config, pkgs, ... }:
+{
   services.caddy = {
     enable = false;
     # Explicitly set the ports if you are having conflicts

@@ -1,8 +1,12 @@
 # NixOS Configuration
 # For help, see: configuration.nix(5) man page and nixos-help
 
-{ config, pkgs, ... }:
-
+{
+  config,
+  pkgs,
+  unstable,
+  ...
+}:
 {
   # ============================================================================
   # BASIC SYSTEM SETTINGS
@@ -16,7 +20,10 @@
     ./rclone.nix
   ];
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   # ============================================================================
   # BOOT & FILESYSTEMS
@@ -26,7 +33,9 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot = {
-    supportedFilesystems = { zfs = true; };
+    supportedFilesystems = {
+      zfs = true;
+    };
 
     kernelModules = [
       "zfs" # ZFS support
@@ -52,9 +61,9 @@
 
     # Firewall configuration
     firewall.allowedTCPPorts = [
-      2283  # Immich
-      8096  # Jellyfin
-      8080  # Romm
+      2283 # Immich
+      8096 # Jellyfin
+      8080 # Romm
     ];
   };
 
@@ -124,7 +133,7 @@
     # Development tools
     nodejs_22
     nodePackages.npm
-    nixfmt
+    nixfmt-rfc-style
 
     # CLI utilities & tools
     docker-compose
@@ -134,6 +143,11 @@
     fastfetch
     bashmount
     nh
+
+    # AI coding tools
+    unstable.opencode
+    unstable.mcp-nixos
+    unstable.herdr
 
     # Backup & monitoring
     restic
