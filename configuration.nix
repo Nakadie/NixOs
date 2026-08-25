@@ -129,6 +129,7 @@
     bash
     coreutils
     openssl
+    gh
 
     # Development tools
     nodejs_22
@@ -145,9 +146,7 @@
     nh
 
     # AI coding tools
-    unstable.opencode
     unstable.mcp-nixos
-    unstable.herdr
 
     # Backup & monitoring
     restic
