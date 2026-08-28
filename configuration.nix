@@ -18,6 +18,7 @@
     ./agh.nix
     ./samba.nix
     ./rclone.nix
+    ./netdata.nix
   ];
 
   nix.settings.experimental-features = [
@@ -49,6 +50,15 @@
       "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 8)}"
     ];
   };
+
+  # Swapfile on the NVMe root filesystem (not the ZFS pool) — the system has 15 GiB RAM and no swap,
+  # which let a memory spike hard-freeze the host (Aug 2026). NixOS creates the file on activation.
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 16384; # 16 GiB
+    }
+  ];
 
   # ============================================================================
   # NETWORKING

@@ -19,7 +19,10 @@
         system = "x86_64-linux";
         specialArgs = {
           inherit inputs;
-          unstable = inputs.nixpkgs-unstable.legacyPackages.x86_64-linux;
+          unstable = import inputs.nixpkgs-unstable {
+            config.allowUnfree = true;
+            system = "x86_64-linux";
+          };
         };
         modules = [
           vscode-server.nixosModules.default
