@@ -164,6 +164,7 @@
     tailscale
     wgnord
     rsync
+    sanoid
 
     # Media & applications
     gedit
