@@ -14,11 +14,11 @@
 
   imports = [
     ./hardware-configuration.nix
-    ./caddy.nix
-    ./agh.nix
-    ./samba.nix
-    ./rclone.nix
-    ./netdata.nix
+    ./modules/caddy.nix
+    ./modules/agh.nix
+    ./modules/samba.nix
+    ./modules/rclone.nix
+    ./modules/netdata.nix
   ];
 
   nix.settings.experimental-features = [
@@ -122,6 +122,7 @@
       "docker-compose"
       "git"
       "vscode-server"
+      "netdata"
     ];
     packages = with pkgs; [ ];
   };

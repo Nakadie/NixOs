@@ -19,8 +19,11 @@
 
 ## Module layout
 
-- One file per service/area, imported from `configuration.nix` (e.g. `agh.nix`, `caddy.nix`, `rclone.nix`, `samba.nix`).
-- `systemPackages` lives in `configuration.nix`. Unstable-only packages (opencode, mcp-nixos, herdr) are referenced as `unstable.<name>`.
+- Machines live under `machines/<name>/`: `machines/nixos` is the server, `machines/minimal` is a plug-and-play live ISO.
+- One file per service/area under `machines/nixos/modules/`, imported from `machines/nixos/configuration.nix` (e.g. `agh.nix`, `caddy.nix`, `rclone.nix`, `samba.nix`).
+- `systemPackages` lives in `machines/nixos/configuration.nix`. Unstable-only packages (opencode, mcp-nixos, herdr) are referenced as `unstable.<name>`.
+- The minimal ISO is a **separate flake** at `machines/minimal/` (own `flake.nix` + `flake.lock`, `nixos-24.11` only). It builds from `machines/minimal/isoImage.nix` (imports `installation-cd-base.nix`) and bakes `secrets/tailscale-oauth` + `secrets/ssh_host_ed25519_key` into the image. Those files are gitignored — create them before building the ISO.
+- Build the ISO from the flake dir: `cd machines/minimal && nix build .#nixosConfigurations.minimal.config.system.build.isoImage --impure` (`--impure` is required: the secrets are referenced by absolute path and gitignored files are excluded from the pure flake store copy).
 
 ## Flake specifics (hard-won)
 

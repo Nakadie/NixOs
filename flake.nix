@@ -14,19 +14,24 @@
       vscode-server,
       ...
     }@inputs:
+    let
+      system = "x86_64-linux";
+      unstable = import inputs.nixpkgs-unstable {
+        config.allowUnfree = true;
+        inherit system;
+      };
+      specialArgs = {
+        inherit inputs;
+        inherit unstable;
+      };
+    in
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          unstable = import inputs.nixpkgs-unstable {
-            config.allowUnfree = true;
-            system = "x86_64-linux";
-          };
-        };
+        inherit system;
+        inherit specialArgs;
         modules = [
           vscode-server.nixosModules.default
-          ./configuration.nix
+          ./machines/nixos/configuration.nix
           # Enable the service here as an inline module:
           (
             { config, pkgs, ... }:
