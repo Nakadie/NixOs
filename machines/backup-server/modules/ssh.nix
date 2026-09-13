@@ -13,7 +13,10 @@
     };
   };
 
-  # The operator public key is provisioned on the host at
-  # /root/.ssh/authorized_keys (the minimal live image bakes the same key in
-  # via isoImage.contents); sshd reads the homedir authorized_keys by default.
+  # Operator key for root login, from the local admin machine. Kept out of
+  # this public repo as secrets/ssh_operator_key.pub (gitignored). Absolute
+  # path because gitignored files do not survive the flake source copy.
+  users.users.root.openssh.authorizedKeys.keyFiles = [
+    /etc/nixos/secrets/ssh_operator_key.pub
+  ];
 }
