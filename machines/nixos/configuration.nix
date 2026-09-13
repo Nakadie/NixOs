@@ -48,9 +48,9 @@
     };
 
     kernelParams = [
-      # ZFS ARC Cache: 8GB limit
+      # ZFS ARC Cache: 4GB limit
       # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-arc-max
-      "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 8)}"
+      "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 4)}"
     ];
   };
 
