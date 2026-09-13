@@ -42,12 +42,15 @@
       "zfs" # ZFS support
     ];
 
-    zfs.extraPools = [ "storagePool8Tb" ];
+    zfs = {
+      extraPools = [ "storagePool8Tb" ];
+      forceImportRoot = false;
+    };
 
     kernelParams = [
-      # ZFS ARC Cache: 8GB limit
+      # ZFS ARC Cache: 4GB limit
       # https://openzfs.github.io/openzfs-docs/Performance%20and%20Tuning/Module%20Parameters.html#zfs-arc-max
-      "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 8)}"
+      "zfs.zfs_arc_max=${builtins.toString (1024 * 1024 * 1024 * 4)}"
     ];
   };
 
@@ -144,8 +147,7 @@
 
     # Development tools
     nodejs_22
-    nodePackages.npm
-    nixfmt-rfc-style
+    nixfmt
 
     # CLI utilities & tools
     docker-compose
@@ -164,6 +166,7 @@
     tailscale
     wgnord
     rsync
+    sanoid
 
     # Media & applications
     gedit
