@@ -18,5 +18,9 @@
     "flakes"
   ];
 
+  # Provide the VS Code server from nixpkgs so Remote-SSH does not try to
+  # download one at runtime.
+  services.vscode-server.enable = true;
+
   system.stateVersion = "26.05";
 }
