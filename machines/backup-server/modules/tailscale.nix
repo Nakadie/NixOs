@@ -24,4 +24,16 @@
   # Trust traffic on the tailscale interface so the node is reachable
   # over the tailnet even with the default firewall.
   networking.firewall.trustedInterfaces = [ config.services.tailscale.interfaceName ];
+
+  # tailscaled-autoconnect can run before DNS/network is up, fail the OAuth
+  # token exchange, and then never retry. Order it after the network and retry
+  # on failure so the node joins automatically on every boot.
+  systemd.services.tailscaled-autoconnect = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "10s";
+    };
+  };
 }
