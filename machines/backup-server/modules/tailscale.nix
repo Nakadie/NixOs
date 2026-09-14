@@ -7,6 +7,10 @@
     enable = true;
 
     authKeyFile = "/etc/tailscale-oauth";
+    authKeyParameters = {
+      # Skip the one-time admin approval prompt for this offsite box.
+      preauthorized = true;
+    };
 
     extraUpFlags = [
       "--ssh"
