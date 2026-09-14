@@ -6,6 +6,7 @@
     ./modules/networking.nix
     ./modules/ssh.nix
     ./modules/tailscale.nix
+    ./modules/users.nix
     ./modules/vscode-server.nix
   ];
 
