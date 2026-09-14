@@ -8,6 +8,8 @@
 
     authKeyFile = "/etc/tailscale-oauth";
     authKeyParameters = {
+      # Persistent node (this is an installed server, not the live ISO).
+      ephemeral = false;
       # Skip the one-time admin approval prompt for this offsite box.
       preauthorized = true;
     };
