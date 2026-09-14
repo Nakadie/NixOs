@@ -19,6 +19,9 @@
     {
       nixosConfigurations.backup-server = nixpkgs.lib.nixosSystem {
         inherit system;
+        specialArgs = {
+          vscodeServer = vscode-server;
+        };
         modules = [
           vscode-server.nixosModules.default
           ./configuration.nix
