@@ -2,7 +2,7 @@
   description = "Plug-and-play live USB ISO (auto tailscale join, key-only SSH)";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
   };
 
   outputs =

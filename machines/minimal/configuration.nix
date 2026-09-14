@@ -1,6 +1,7 @@
 {
   imports = [
     ./isoImage.nix
+    ./modules/baked-files.nix
     ./modules/networking.nix
     ./modules/ssh.nix
     ./modules/tailscale.nix
@@ -8,5 +9,5 @@
     ./modules/environment.nix
   ];
 
-  system.stateVersion = "24.11";
+  system.stateVersion = "26.05";
 }
