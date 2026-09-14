@@ -15,7 +15,6 @@
     };
 
     extraUpFlags = [
-      "--ssh"
       "--accept-dns=false"
       # Required with OAuth client secrets: devices registered via OAuth are
       # tag-owned and must advertise one of the tags assigned to the client.
