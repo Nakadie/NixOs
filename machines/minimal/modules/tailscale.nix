@@ -26,4 +26,16 @@
   # Trust traffic on the tailscale interface so the node is reachable
   # even with the ISO's default firewall.
   networking.firewall.trustedInterfaces = [ config.services.tailscale.interfaceName ];
+
+  # On a live boot, tailscaled-autoconnect can run before DNS/network is up,
+  # fail the OAuth token exchange, and then never retry. Order it after the
+  # network and retry on failure so the baked secret joins automatically.
+  systemd.services.tailscaled-autoconnect = {
+    after = [ "network-online.target" ];
+    wants = [ "network-online.target" ];
+    serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "10s";
+    };
+  };
 }
