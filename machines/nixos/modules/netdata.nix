@@ -8,6 +8,10 @@
 }:
 let
   cfg = config.services.netdata;
+  # Addresses live in a gitignored file (this repo is public).
+  netdataIps = import /etc/nixos/secrets/netdata-ips.nix;
+  # Shared key the backup server uses to stream its charts to this parent.
+  streamKey = (import /etc/nixos/secrets/netdata-stream-key.nix).key;
 in
 {
   # The 24.11 module lacks `extraNdsudoPackages`; use the unstable one,
@@ -29,7 +33,8 @@ in
         # https://learn.netdata.cloud/docs/configuring/daemon-configuration
         config = {
           web = {
-            "bind to" = "192.168.8.206:19999";
+            # Reachable on the LAN and over Tailscale so remote children can stream.
+            "bind to" = "${netdataIps.parentLan}:19999 ${netdataIps.parentTs}:19999";
           };
           cloud = {
             scope = "none";
@@ -116,6 +121,14 @@ in
         };
 
         configDir = {
+          # Accept streaming children that present the shared key.
+          "stream.conf" = pkgs.writeText "netdata-stream.conf" ''
+            [${streamKey}]
+                enabled = yes
+                default memory mode = dbengine
+                health enabled by default = auto
+          '';
+
           "go.d.conf" = pkgs.writers.writeYAML "netdata-go.d.conf" {
             modules = {
               dnsmasq = false;

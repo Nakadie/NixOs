@@ -3,6 +3,7 @@
     ./hardware-configuration.nix
     ./modules/zfs.nix
     ./modules/environment.nix
+    ./modules/netdata.nix
     ./modules/networking.nix
     ./modules/sanoid.nix
     ./modules/ssh.nix
