@@ -4,6 +4,7 @@
     ./modules/zfs.nix
     ./modules/environment.nix
     ./modules/networking.nix
+    ./modules/sanoid.nix
     ./modules/ssh.nix
     ./modules/tailscale.nix
     ./modules/users.nix
