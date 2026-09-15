@@ -6,6 +6,7 @@
     ./modules/networking.nix
     ./modules/sanoid.nix
     ./modules/ssh.nix
+    ./modules/syncoid.nix
     ./modules/tailscale.nix
     ./modules/users.nix
     ./modules/vscode-server.nix
