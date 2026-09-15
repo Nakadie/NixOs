@@ -19,6 +19,7 @@
     ./modules/samba.nix
     ./modules/rclone.nix
     ./modules/netdata.nix
+    ./modules/sanoid.nix
   ];
 
   nix.settings.experimental-features = [
