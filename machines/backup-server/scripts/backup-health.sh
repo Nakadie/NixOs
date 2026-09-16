@@ -9,6 +9,7 @@ dataset="${DATASET:?DATASET not set}"
 pool="${POOL:?POOL not set}"
 timers="${TIMERS:-}"
 peer="${PEER:-}"
+peer_dataset="${PEER_DATASET:-$dataset}"
 max_age_hourly="${MAX_AGE_HOURLY:-10800}"     # 3 h
 max_age_daily="${MAX_AGE_DAILY:-172800}"      # 2 d
 max_age_monthly="${MAX_AGE_MONTHLY:-3024000}" # 35 d
@@ -58,12 +59,12 @@ done
 # The target must hold the source's newest snapshot.
 if [ -n "$peer" ]; then
   peer_newest=$(ssh -o BatchMode=yes -o ConnectTimeout=15 "$peer" \
-    "zfs list -t snapshot -H -o name -s creation '$dataset' | tail -1" 2>/dev/null || true)
+    "zfs list -t snapshot -H -o name -s creation '$peer_dataset' | tail -1" 2>/dev/null || true)
   local_newest=$(printf '%s\n' "$snaps" | tail -1 | awk '{print $1}')
   if [ -z "$peer_newest" ]; then
     problems+=("cannot read newest snapshot from $peer")
-  elif [ "$local_newest" != "$peer_newest" ]; then
-    problems+=("newest snapshot mismatch: local=$local_newest peer=$peer_newest")
+  elif [ "${local_newest##*@}" != "${peer_newest##*@}" ]; then
+    problems+=("newest snapshot mismatch: local=${local_newest##*@} peer=${peer_newest##*@}")
   fi
 fi
 

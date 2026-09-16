@@ -40,6 +40,7 @@ in
       TIMERS = "sanoid.timer syncoid-pull.timer";
       # The box must hold the source's newest snapshot.
       PEER = "root@nixos";
+      PEER_DATASET = "storagePool8Tb/photos";
     };
   };
 
