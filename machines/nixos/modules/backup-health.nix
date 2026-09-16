@@ -19,7 +19,9 @@ in
     description = "Verify the ZFS snapshot pipeline";
     after = [ "zfs.target" ];
     path = [
+      pkgs.bash
       pkgs.coreutils
+      pkgs.gnugrep
       pkgs.gnused
       pkgs.gawk
       pkgs.curl
