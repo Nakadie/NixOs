@@ -1,6 +1,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules/backup-health.nix
     ./modules/beszel.nix
     ./modules/zfs.nix
     ./modules/environment.nix

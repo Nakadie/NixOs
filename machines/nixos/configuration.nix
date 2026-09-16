@@ -20,6 +20,7 @@
     ./modules/rclone.nix
     ./modules/netdata.nix
     ./modules/sanoid.nix
+    ./modules/backup-health.nix
   ];
 
   nix.settings.experimental-features = [
