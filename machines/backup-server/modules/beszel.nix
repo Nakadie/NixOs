@@ -1,0 +1,31 @@
+{
+  pkgs,
+  ...
+}:
+let
+  # Hub URL, token and key live in a gitignored file (this repo is public).
+  beszel = import /etc/nixos/secrets/beszel.nix;
+in
+{
+  systemd.services.beszel-agent = {
+    description = "Beszel monitoring agent";
+    after = [
+      "network-online.target"
+      "tailscaled.service"
+    ];
+    wants = [ "network-online.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.beszel}/bin/beszel-agent";
+      Restart = "always";
+      RestartSec = 5;
+      DynamicUser = true;
+      # Direct mode: the agent dials out to the hub, so no inbound port.
+      Environment = [
+        "HUB_URL=${beszel.hubUrl}"
+        "TOKEN=${beszel.token}"
+        "KEY=${beszel.key}"
+      ];
+    };
+  };
+}

@@ -1,6 +1,7 @@
 {
   imports = [
     ./hardware-configuration.nix
+    ./modules/beszel.nix
     ./modules/zfs.nix
     ./modules/environment.nix
     ./modules/netdata.nix
