@@ -20,12 +20,13 @@ in
       Restart = "always";
       RestartSec = 5;
       DynamicUser = true;
-      # Direct mode: the agent dials out to the hub, so no inbound port.
-      Environment = [
-        "HUB_URL=${beszel.hubUrl}"
-        "TOKEN=${beszel.token}"
-        "KEY=${beszel.key}"
-      ];
+    };
+    # Direct mode: the agent dials out to the hub, so no inbound port. The
+    # attrset form keeps the spaces in the SSH key intact.
+    environment = {
+      HUB_URL = beszel.hubUrl;
+      TOKEN = beszel.token;
+      KEY = beszel.key;
     };
   };
 }
