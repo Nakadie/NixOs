@@ -2,8 +2,7 @@
 
 {
   services.adguardhome = {
-    # Not ready to use yet — disabled for now.
-    enable = false;
+    enable = true;
     host = "0.0.0.0";
     port = 3000; # Management interface port
     mutableSettings = true;
