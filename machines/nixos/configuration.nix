@@ -223,7 +223,13 @@
       enable = true;
       useRoutingFeatures = "server";
       # extraSetFlags (not extraUpFlags: the latter only applies when authKeyFile is set)
-      extraSetFlags = [ "--advertise-routes=192.168.8.206/32" ];
+      extraSetFlags = [
+        "--advertise-routes=192.168.8.206/32"
+        # Leave tailnet :22 to regular sshd (root key auth). Tailscale SSH
+        # intercepts it but cannot authorize a tagged -> user-owned connection,
+        # which breaks the backup server's off-site `syncoid` pull of root@nixos.
+        "--ssh=false"
+      ];
     };
 
     # Storage
