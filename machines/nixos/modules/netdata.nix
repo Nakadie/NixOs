@@ -10,7 +10,8 @@ let
   cfg = config.services.netdata;
   # Addresses live in a gitignored file (this repo is public).
   netdataIps = import /etc/nixos/secrets/netdata-ips.nix;
-  # Shared key the backup server uses to stream its charts to this parent.
+  # Shared key the backup server uses to stream its charts to this parent
+  # (gitignored, never committed).
   streamKey = (import /etc/nixos/secrets/netdata-stream-key.nix).key;
 in
 {
