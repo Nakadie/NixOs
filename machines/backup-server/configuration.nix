@@ -14,12 +14,25 @@
     ./modules/tailscale.nix
     ./modules/users.nix
     ./modules/vscode-server.nix
+    ./modules/watchdog.nix
   ];
 
   boot.loader = {
-    systemd-boot.enable = true;
+    systemd-boot = {
+      enable = true;
+      # Cap generations so /boot (511M) cannot fill up while unreachable.
+      configurationLimit = 10;
+    };
     efi.canTouchEfiVariables = true;
   };
+
+  # Swap so an OOM spike cannot kill tailscaled/sshd on an unattended box.
+  swapDevices = [
+    {
+      device = "/swapfile";
+      size = 8192; # 8 GiB
+    }
+  ];
 
   nix.settings.experimental-features = [
     "nix-command"
