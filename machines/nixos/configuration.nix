@@ -216,7 +216,15 @@
     vscode-server.enable = true;
 
     # VPN
-    tailscale.enable = true;
+    # Subnet router: advertise this host's own LAN IP so tailnet clients can
+    # reach it by its LAN address (e.g. Komga at http://192.168.8.206:25600)
+    # without Tailscale running while on the home network.
+    tailscale = {
+      enable = true;
+      useRoutingFeatures = "server";
+      # extraSetFlags (not extraUpFlags: the latter only applies when authKeyFile is set)
+      extraSetFlags = [ "--advertise-routes=192.168.8.206/32" ];
+    };
 
     # Storage
     zfs.autoScrub = {
