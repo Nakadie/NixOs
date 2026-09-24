@@ -2,7 +2,8 @@
 
 {
   services.adguardhome = {
-    enable = true;
+    # Not ready to use yet — disabled for now.
+    enable = false;
     host = "0.0.0.0";
     port = 3000; # Management interface port
     mutableSettings = true;
@@ -22,5 +23,4 @@
     88
   ];
   networking.firewall.allowedUDPPorts = [ 53 ];
-  networking.firewall.trustedInterfaces = [ "nordlynx" ];
 }
