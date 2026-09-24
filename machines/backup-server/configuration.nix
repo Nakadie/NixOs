@@ -7,6 +7,7 @@
     ./modules/environment.nix
     ./modules/netdata.nix
     ./modules/networking.nix
+    ./modules/relay.nix
     ./modules/sanoid.nix
     ./modules/ssh.nix
     ./modules/syncoid.nix
