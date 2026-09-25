@@ -54,8 +54,16 @@ in
 
       "go.d.conf" = pkgs.writers.writeYAML "netdata-go.d.conf" {
         modules = {
-          sensors = false;
+          sensors = true;
         };
+      };
+
+      "go.d/sensors.conf" = pkgs.writers.writeYAML "netdata-sensors.conf" {
+        jobs = [
+          {
+            name = "sensors";
+          }
+        ];
       };
 
       "go.d/zfs.conf" = pkgs.writers.writeYAML "netdata-zfs.conf" {
