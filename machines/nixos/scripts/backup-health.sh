@@ -64,7 +64,7 @@ if [ -n "$peer" ]; then
   if [ -z "$peer_newest" ]; then
     problems+=("cannot read newest snapshot from $peer")
   elif [ "${local_newest##*@}" != "${peer_newest##*@}" ]; then
-    problems+=("newest snapshot mismatch: local=${local_newest##*@} peer=${peer_newest##*@}")
+    problems+=("newest snapshot mismatch: ${dataset}=${local_newest##*@} vs ${peer_dataset}=${peer_newest##*@}")
   fi
 fi
 

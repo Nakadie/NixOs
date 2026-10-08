@@ -7,10 +7,11 @@
 
 ## Build & switch
 
-- `rebuild` is aliased to `nh os switch` (configuration.nix `environment.shellAliases`).
+- `midori` is aliased to `nh os switch --impure -H nixos /etc/nixos` (configuration.nix `environment.shellAliases`).
 - Activation: `nh os switch /etc/nixos` (no `sudo` — `nh` handles elevation). Run from `/etc/nixos`.
 - To validate without switching: `nix eval .#nixosConfigurations.nixos.config.system.build.toplevel.drvPath`.
 - `nh` caches flake snapshots by git tree hash. After editing, `git add -A` first — otherwise a stale eval cache can surface errors that `nix eval --refresh` no longer shows.
+- The backup server is a **separate flake** at `machines/backup-server/` (own `flake.nix` + `flake.lock`, target `nixosConfigurations.backup-server`). Deploy over SSH from this host (builds locally, copies, then activates): `nh os switch --impure -H backup-server --target-host root@backup-server /etc/nixos/machines/backup-server`, aliased as `oaza`. `--impure` is required because modules reference absolute secret paths (e.g. `/etc/nixos/secrets/netdata-ips.nix`); `root@backup-server` resolves via `~/.ssh/config`. `git add -A` first. `nixos-rebuild` equivalent: `nixos-rebuild switch --impure --flake /etc/nixos/machines/backup-server#backup-server --target-host root@backup-server`.
 
 ## Formatting
 

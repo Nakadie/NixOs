@@ -180,7 +180,8 @@
   # ============================================================================
 
   environment.shellAliases = {
-    rebuild = "nh os switch";
+    midori = "nh os switch --impure -H nixos /etc/nixos";
+    oaza = "nh os switch --impure -H backup-server --target-host root@backup-server /etc/nixos/machines/backup-server";
   };
 
   # services.restic.backups."paperless-documents" = {

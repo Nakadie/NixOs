@@ -5,9 +5,9 @@
 {
   services.sanoid = {
     enable = true;
-    # Run every minute so the hourly/daily/monthly boundaries are hit precisely
-    # (sanoid --cron decides which tier is due).
-    interval = "minutely";
+    # Matches the finest tier (hourly=24); --cron only acts when a tier is due.
+    # OnCalendar=hourly fires at :00, ahead of the backup server's :05 syncoid pull.
+    interval = "hourly";
     datasets."storagePool8Tb/photos" = {
       autosnap = true;
       autoprune = true;
