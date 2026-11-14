@@ -13,16 +13,17 @@ let
     name = "auto-fix-vscode-server-patched";
     executable = true;
     destination = "/bin/auto-fix-vscode-server";
-    text = lib.replaceStrings
-      [
-        "-maxdepth 1 -type d -printf"
-        "actual_dir=\"$bins_dir$bin\""
-      ]
-      [
-        "-maxdepth 1 -not -name '.*' -type d -printf"
-        "if [[ \"$bin\" == .* ]]; then continue; fi; actual_dir=\"$bins_dir$bin\""
-      ]
-      (builtins.readFile "${autoFix}/bin/auto-fix-vscode-server");
+    text =
+      lib.replaceStrings
+        [
+          "-maxdepth 1 -type d -printf"
+          "actual_dir=\"$bins_dir$bin\""
+        ]
+        [
+          "-maxdepth 1 -not -name '.*' -type d -printf"
+          "if [[ \"$bin\" == .* ]]; then continue; fi; actual_dir=\"$bins_dir$bin\""
+        ]
+        (builtins.readFile "${autoFix}/bin/auto-fix-vscode-server");
   };
 in
 {
