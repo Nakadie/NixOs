@@ -15,6 +15,8 @@ max_age_daily="${MAX_AGE_DAILY:-172800}"      # 2 d
 max_age_monthly="${MAX_AGE_MONTHLY:-3024000}" # 35 d
 min_snapshots="${MIN_SNAPSHOTS:-1}"
 min_free_gb="${MIN_FREE_GB:-50}"
+sync_service="${SYNC_SERVICE:-}"              # unit that performs transfers
+max_sync_time="${MAX_SYNC_TIME:-43200}"       # 12 h; longer = stuck
 
 problems=()
 now=$(date +%s)
@@ -30,6 +32,28 @@ free_gb=$(( free_b / 1024 / 1024 / 1024 ))
 for t in $timers; do
   systemctl is-active --quiet "$t" || problems+=("$t is not active")
 done
+
+# If a transfer is in flight the replica is expected to lag the source, so the
+# newest-snapshot comparison and the hourly age check are suspended. A transfer
+# running longer than max_sync_time is treated as stuck. A running oneshot
+# reports ActiveState=activating, so is-active cannot be used here.
+syncing=false
+sync_age=0
+if [ -n "$sync_service" ]; then
+  state=$(systemctl show -p ActiveState --value "$sync_service" 2>/dev/null || true)
+  case $state in
+    active | activating | reloading)
+      syncing=true
+      started=$(systemctl show -p ExecMainStartTimestamp --value "$sync_service" 2>/dev/null || true)
+      if [ -n "$started" ]; then
+        sync_age=$(( now - $(date -d "$started" +%s) ))
+      fi
+      ;;
+  esac
+fi
+if [ "$syncing" = true ] && [ "$sync_age" -gt "$max_sync_time" ]; then
+  problems+=("$sync_service running ${sync_age}s > ${max_sync_time}s (stuck?)")
+fi
 
 # Snapshot list, oldest first.
 snaps=$(zfs list -t snapshot -Hp -o name,creation -s creation "$dataset" 2>/dev/null || true)
@@ -52,7 +76,12 @@ for tier in hourly daily monthly; do
   if [ -z "$age" ]; then
     problems+=("no $tier snapshot on $dataset")
   elif [ "$age" -gt "$max" ]; then
-    problems+=("$tier snapshot age ${age}s > ${max}s")
+    # Expected while a transfer is in flight; a stuck sync is reported above.
+    if [ "$tier" = hourly ] && [ "$syncing" = true ]; then
+      : # catching up; lag is expected
+    else
+      problems+=("$tier snapshot age ${age}s > ${max}s")
+    fi
   fi
 done
 
@@ -64,12 +93,18 @@ if [ -n "$peer" ]; then
   if [ -z "$peer_newest" ]; then
     problems+=("cannot read newest snapshot from $peer")
   elif [ "${local_newest##*@}" != "${peer_newest##*@}" ]; then
-    problems+=("newest snapshot mismatch: ${dataset}=${local_newest##*@} vs ${peer_dataset}=${peer_newest##*@}")
+    if [ "$syncing" = true ]; then
+      : # transfer in flight; replica is expected to lag the source
+    else
+      problems+=("newest snapshot mismatch: ${dataset}=${local_newest##*@} vs ${peer_dataset}=${peer_newest##*@}")
+    fi
   fi
 fi
 
 if [ "${#problems[@]}" -eq 0 ]; then
-  echo "backup-health OK: $dataset, $count snapshots, pool $pool $health, free ${free_gb}GiB"
+  extra=""
+  [ "$syncing" = true ] && extra=" (sync in progress ${sync_age}s; replica behind is expected)"
+  echo "backup-health OK: $dataset, $count snapshots, pool $pool $health, free ${free_gb}GiB${extra}"
   exit 0
 fi
 

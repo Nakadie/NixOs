@@ -23,6 +23,7 @@
       specialArgs = {
         inherit inputs;
         inherit unstable;
+        vscodeServer = inputs.vscode-server;
       };
     in
     {

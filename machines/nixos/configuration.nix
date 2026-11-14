@@ -14,6 +14,7 @@
 
   imports = [
     ./hardware-configuration.nix
+    ./modules/graphics.nix
     ./modules/caddy.nix
     ./modules/agh.nix
     ./modules/samba.nix
@@ -21,6 +22,7 @@
     ./modules/netdata.nix
     ./modules/sanoid.nix
     ./modules/backup-health.nix
+    ../backup-server/modules/vscode-server.nix
   ];
 
   nix.settings.experimental-features = [

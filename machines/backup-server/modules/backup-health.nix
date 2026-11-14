@@ -41,6 +41,9 @@ in
       # The box must hold the source's newest snapshot.
       PEER = "root@nixos";
       PEER_DATASET = "storagePool8Tb/photos";
+      # While this unit is running, replica lag is expected, not a failure.
+      SYNC_SERVICE = "syncoid-pull.service";
+      MAX_SYNC_TIME = "43200"; # 12 h
     };
   };
 
